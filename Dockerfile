@@ -1,6 +1,5 @@
 # ---- base image ----
-# Debian 11 (Bullseye) has full Chrome dependency support out of the box.
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim-bullsey
 
 # Install wget/xvfb, then pull & install the latest stable Chrome .deb
 # (Chrome's postinst script handles all its own library deps via apt -f)
