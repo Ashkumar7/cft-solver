@@ -69,10 +69,17 @@ def _start_xvfb_if_needed() -> Optional[subprocess.Popen]:
 
 
 async def _solve(sitekey: str, siteurl: str, timeout: int) -> str:
+    # --no-sandbox + --disable-dev-shm-usage are required inside Docker/Linux
+    linux_args = (
+        ["--no-sandbox", "--disable-dev-shm-usage"]
+        if platform.system() == "Linux"
+        else []
+    )
     browser = await uc.start(
         browser_executable_path=_find_chrome(),
         headless=False,
         user_data_dir=_get_profile_dir(),
+        browser_args=linux_args,
     )
 
     try:

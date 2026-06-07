@@ -1,0 +1,11 @@
+services:
+  ezsolver:
+    build: .
+    ports:
+      - "8191:8191"
+    # Give Chrome enough shared memory — default Docker /dev/shm is only 64 MB
+    shm_size: "4gb"
+    environment:
+      MAX_WORKERS: "8" # ~500 MB RAM per worker; adjust to your machine
+      PORT: "8191"
+    restart: unless-stopped
