@@ -1,5 +1,5 @@
 # ---- base image ----
-FROM python:3.11-slim-bullsey
+FROM python:3.11-slim-bullseye
 
 # Install wget/xvfb, then pull & install the latest stable Chrome .deb
 # (Chrome's postinst script handles all its own library deps via apt -f)
