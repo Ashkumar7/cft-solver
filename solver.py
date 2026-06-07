@@ -6,10 +6,8 @@ import random
 import subprocess
 import time
 from typing import Optional
-"""
-MADE BY ISMOILOFF. GOOD LUCK HAVE FUN, THIS IS JUST PROJECT, USE IT ON UR OWN RISKS!
-
-"""
+import tempfile
+import shutil
 import nodriver as uc
 
 
@@ -75,10 +73,13 @@ async def _solve(sitekey: str, siteurl: str, timeout: int) -> str:
         if platform.system() == "Linux"
         else []
     )
+    # Use a unique temporary profile directory per solve to avoid concurrent
+    # Chrome profile lock conflicts when multiple instances start simultaneously.
+    profile_dir = tempfile.mkdtemp(prefix="ts_profile_")
     browser = await uc.start(
         browser_executable_path=_find_chrome(),
         headless=False,
-        user_data_dir=_get_profile_dir(),
+        user_data_dir=profile_dir,
         browser_args=linux_args,
     )
 
@@ -191,7 +192,16 @@ async def _solve(sitekey: str, siteurl: str, timeout: int) -> str:
             await asyncio.sleep(0.3)
 
     finally:
-        browser.stop()
+        try:
+            browser.stop()
+        except Exception:
+            pass
+        # Clean up temporary profile directory
+        try:
+            if os.path.isdir(profile_dir):
+                shutil.rmtree(profile_dir)
+        except Exception:
+            pass
 
     if not token:
         raise TimeoutError(f"Turnstile token not obtained within {timeout}s")
