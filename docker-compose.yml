@@ -8,4 +8,10 @@ services:
     environment:
       MAX_WORKERS: "8" # ~500 MB RAM per worker; adjust to your machine
       PORT: "8191"
+    networks:
+      - benzene-network
     restart: unless-stopped
+
+networks:
+  benzene-network:
+    external: true
